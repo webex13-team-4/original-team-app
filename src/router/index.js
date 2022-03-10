@@ -13,27 +13,27 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/playerlist",
+    path: "/playerlist/:id",
     name: "playerlist",
     component: PlayerList,
   },
   {
-    path: "/shufflecheck",
+    path: "/shufflecheck/:id/:playerId",
     name: "shufflecheck",
     component: ShuffleCheck,
   },
   {
-    path: "/chatview",
+    path: "/chatview/:id/:playerId",
     name: "chatview",
     component: ChatView,
   },
   {
-    path: "/voteview",
+    path: "/voteview/:id/:playerId",
     name: "voteview",
     component: VoteView,
   },
   {
-    path: "/resultview",
+    path: "/resultview/:id",
     name: "resultview",
     component: ResultView,
   },
