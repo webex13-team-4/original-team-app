@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import firebase from "firebase"
+import firebase from "firebase/compat/app"
 // import Nl2br from "vue-nl2br"
 // 改行を <br> タグに変換するモジュール
 export default {

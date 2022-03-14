@@ -1,21 +1,24 @@
 import { createRouter, createWebHistory } from "vue-router"
-import HomeView from "../views/HomeView.vue"
 import ChatApp from "@/views/ChatApp.vue"
+import GameView from "../views/GameView.vue"
+import StartView from "../views/StartView.vue"
+// import PlayerList from "../views/PlayerList.vue"
+// import ShuffleCheck from "../views/ShuffleCheck.vue"
+// import ChatView from "../views/ChatView.vue"
+// import VoteView from "../views/VoteView.vue"
+// import ResultView from "../views/ResultView.vue"
 
 const routes = [
   {
-    path: "/",
-    name: "home",
-    component: HomeView,
+    path: "/:id/:playerId",
+    name: "gameview",
+    component: GameView,
+    props: true,
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    path: "/",
+    name: "startview",
+    component: StartView,
   },
   {
     path: "/chat",
@@ -23,6 +26,32 @@ const routes = [
     component: ChatApp,
   },
 ]
+//   {
+//     path: "/playerlist/:id",
+//     name: "playerlist",
+//     component: PlayerList,
+//   },
+//   {
+//     path: "/shufflecheck/:id/:playerId",
+//     name: "shufflecheck",
+//     component: ShuffleCheck,
+//   },
+//   {
+//     path: "/chatview/:id/:playerId",
+//     name: "chatview",
+//     component: ChatView,
+//   },
+//   {
+//     path: "/voteview/:id/:playerId",
+//     name: "voteview",
+//     component: VoteView,
+//   },
+//   {
+//     path: "/resultview/:id",
+//     name: "resultview",
+//     component: ResultView,
+//   },
+// ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
