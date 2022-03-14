@@ -1,26 +1,30 @@
 <template>
+  <h1>題名</h1>
   <router-link :to="`/${docId}/0`" class="navigation__link">
     <div>
       <button>start!</button>
     </div>
   </router-link>
-  {{ docId }}
+  <!-- {{ docId }} -->
 </template>
 
 <script>
 import { collection, addDoc } from "firebase/firestore"
+import { ref, onMounted } from "vue"
 import { db } from "@/firebase.js"
 
 export default {
-  data() {
+  setup() {
+    const docId = ref("")
+    onMounted(() => {
+      const data = { currentComponent: "HomeView" }
+      addDoc(collection(db, "rooms"), data).then((docRef) => {
+        docId.value = docRef.id
+      })
+    })
     return {
-      docId: "",
+      docId,
     }
-  },
-  created: async function () {
-    const data = { currentComponent: "HomeView" }
-    let docRef = await addDoc(collection(db, "rooms"), data)
-    this.docId = docRef.id
   },
 }
 </script>

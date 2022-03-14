@@ -1,7 +1,7 @@
 <template>
   <div>
-    {{ currentComponent }}
-    {{ docId }}
+    <!-- {{ currentComponent }}
+    {{ docId }} -->
   </div>
   <HomeView
     v-if="currentComponent === 'HomeView'"
@@ -79,9 +79,5 @@ export default {
       })
     })
   },
-  // getDoc(collection(db, "rooms", this.$route.params.id)).then((docSnap) => {
-  //   this.shuffleplayersId.value = docSnap.data().shuffleplayers
-  // })
-  // subscribeGameData
 }
 </script>

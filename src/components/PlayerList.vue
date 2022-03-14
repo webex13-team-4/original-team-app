@@ -6,23 +6,15 @@
   </div>
   <div>
     {{ players }}
-    {{ playerNum }}
+    <!-- {{ playerNum }} -->
   </div>
 
   <button>招待</button>
-  <!-- <router-link
-    :to="`/shufflecheck/${$route.params.id}/${playerNum}`"
-    class="navigation__link"
-  > -->
-  <!-- <router-link
-    :to="`/${$route.params.id}/${playerNum}`"
-    class="navigation__link"
-  > -->
+
   <div>
     <button v-on:click="shuffle">シャッフル</button>
   </div>
-  <!-- </router-link> -->
-  <!-- </router-link> -->
+
   制限時間<input type="number" />分
 </template>
 
@@ -30,20 +22,14 @@
 import { onSnapshot, addDoc, collection, setDoc, doc } from "firebase/firestore"
 import { ref, onMounted, onUnmounted } from "vue"
 import { db } from "@/firebase.js"
-// import { useRoute, useRouter } from "vue-router"
 import { useRoute } from "vue-router"
 import { players, shuffleplayersId } from "@/lib/game.js"
-// import { subscribeGameData } from "@/lib/game.js"
 export default {
   setup(props, { emit }) {
-    // data を置き換える
     const random1 = ref("")
     const random2 = ref("")
     const playerNum = ref(0)
     const route = useRoute()
-    // const router = useRouter()
-
-    // methods を置き換える
     const enter = (playerName) => {
       const data = { name: playerName }
       addDoc(collection(db, "rooms", route.params.id, "players"), data)
@@ -52,20 +38,11 @@ export default {
       emit("send-playerId", playerNum.value)
     }
 
-    // const shuffleArray = (array, num1, num2) => {
-    //   const trash = array[num1]
-    //   array[num1] = array[num2]
-    //   array[num2] = trash
-    //   return array
-    // }
-
     const getRandomInt = (max) => {
       return Math.floor(Math.random() * max)
     }
 
     const shuffle = () => {
-      // const data = { players: players.value }
-      // updateDoc(doc(db, "rooms", route.params.id), data)
       random1.value = getRandomInt(players.value.length)
       random2.value = getRandomInt(players.value.length)
 
@@ -73,9 +50,6 @@ export default {
         random2.value = getRandomInt(players.value.length)
       }
 
-      // shuffleArray(players.value, random1.value, random2.value)
-      // const shuffledata = { shuffleplayers: players.value }
-      // updateDoc(doc(db, "rooms", route.params.id, "players"), shuffledata)
       shuffleplayersId.value = [random1.value, random2.value]
       const data = {
         shuffleplayersId: [random1.value, random2.value],
@@ -85,11 +59,6 @@ export default {
     }
 
     onMounted(() => {
-      // const docRef = doc(db, "rooms", route.params.id)
-      // getDoc(docRef).then((docSnap) => {
-      //   players.value = [...docSnap.data().players]
-      // })
-      // docRefに変更があったとき、コールバックが実行される
       const Ref = collection(db, "rooms", route.params.id, "players")
       onSnapshot(Ref, (Snapshot) => {
         players.value = []
@@ -97,7 +66,6 @@ export default {
           players.value = [...players.value, doc.data().name]
         })
       })
-      // subscribeGameData
     })
 
     onUnmounted(() => {

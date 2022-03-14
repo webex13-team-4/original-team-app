@@ -11,14 +11,9 @@
   <button v-on:click="exitvote">終了</button>
   {{ checkedplayersId }}
 
-  <!-- <router-link
-    :to="`/resultview/${this.$route.params.id}`"
-    class="navigation__link"
-  > -->
   <div>
     <button @click="vote">投票する</button>
   </div>
-  <!-- </router-link> -->
 </template>
 
 <script>
@@ -31,42 +26,7 @@ export default {
   props: {
     players: [],
   },
-  // data() {
-  //   return {
-  //     players: [],
-  //     shuffleplayers: [],
-  //     irekawari: [],
-  //     selectplayers: [],
-  //     complete: false,
-  //     shuffle: false,
-  //   }
-  // },
-  // methods: {
-  //   selectplayer(player) {
-  //     this.selectplayers.push(player)
-  //     if (this.selectplayers.length === 2) {
-  //       this.complete = true
-  //     }
-  //   },
-  //   vote() {
-  //     const data = { ののか: this.selectplayers }
-  //     addDoc(collection(db, "rooms", this.$route.params.id, "results"), data)
-  //   },
-  // },
-  // created() {
-  //   const docRef = doc(db, "rooms", this.$route.params.id)
-  //   getDoc(docRef).then((docSnap) => {
-  //     this.players = docSnap.data().players
-  //     this.shuffleplayers = docSnap.data().shuffleplayers
-  //     this.irekawari = this.shuffleplayers[this.players.indexOf("ののか")]
-  //     if (
-  //       this.players[this.$route.params.playerId] !==
-  //       this.shuffleplayers[this.$route.params.playerId]
-  //     ) {
-  //       this.shuffle = true
-  //     }
-  //   })
-  // },
+
   setup(props, { emit }) {
     const shuffle = ref("")
     const route = useRoute()
