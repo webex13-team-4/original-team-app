@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
+import ChatApp from "@/views/ChatApp.vue"
 import GameView from "../views/GameView.vue"
 import StartView from "../views/StartView.vue"
 // import PlayerList from "../views/PlayerList.vue"
@@ -18,6 +19,11 @@ const routes = [
     path: "/",
     name: "startview",
     component: StartView,
+  },
+  {
+    path: "/chat",
+    name: "ChatApp",
+    component: ChatApp,
   },
 ]
 //   {
