@@ -9,36 +9,14 @@
 </template>
 
 <script>
-import { onSnapshot, collection, doc } from "firebase/firestore"
+import { onSnapshot, collection } from "firebase/firestore"
 import { ref, onUnmounted } from "vue"
 import { db } from "@/firebase.js"
-import { useRoute, useRouter } from "vue-router"
+import { useRoute } from "vue-router"
 import { players, shuffleplayersId } from "@/lib/game.js"
 export default {
   setup() {
     const route = useRoute()
-    const router = useRouter()
-    const Ref = collection(db, "rooms", route.params.id, "players")
-    const playerunsub = onSnapshot(Ref, (Snapshot) => {
-      players.value = []
-      Snapshot.forEach((doc) => {
-        players.value = [...players.value, doc.data().name]
-      })
-    })
-
-    const docref = doc(db, "rooms", route.params.id)
-    const componentunsub = onSnapshot(docref, (Snapshot) => {
-      router.replace(
-        `/${route.params.id}/${route.params.playerId}/${
-          Snapshot.data().currentComponent
-        }`
-      )
-    })
-    const shuffleref = doc(db, "rooms", route.params.id)
-    const shuffleunsub = onSnapshot(shuffleref, (Snapshot) => {
-      shuffleplayersId.value = []
-      shuffleplayersId.value = Snapshot.data().shuffleplayersId
-    })
 
     const votedId = ref([])
     const voteRef = collection(db, "rooms", route.params.id, "votes")
@@ -56,9 +34,6 @@ export default {
     })
 
     onUnmounted(() => {
-      playerunsub()
-      componentunsub()
-      shuffleunsub()
       voteunsub()
     })
     return {

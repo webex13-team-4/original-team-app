@@ -10,9 +10,9 @@
 
   <button>招待</button>
 
-  <div>
+  <div v-if="playerNum === 0">
     <router-link
-      :to="`/${$route.params.id}/${playerNum}/shufflecheck`"
+      :to="`/${$route.params.id}/shufflecheck`"
       class="navigation__link"
     >
       <button v-on:click="shuffle">シャッフル</button>
@@ -23,43 +23,22 @@
 </template>
 
 <script>
-import {
-  onSnapshot,
-  collection,
-  doc,
-  updateDoc,
-  setDoc,
-} from "firebase/firestore"
-import { ref, onUnmounted } from "vue"
+import { doc, updateDoc, setDoc } from "firebase/firestore"
+import { ref } from "vue"
 import { db } from "@/firebase.js"
-import { players, shuffleplayersId, getRandomInt } from "@/lib/game.js"
+import {
+  players,
+  shuffleplayersId,
+  getRandomInt,
+  playerNum,
+} from "@/lib/game.js"
 import { useRoute, useRouter } from "vue-router"
 
 export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const Ref = collection(db, "rooms", route.params.id, "players")
 
-    const playerunsub = onSnapshot(Ref, (Snapshot) => {
-      players.value = []
-      Snapshot.forEach((doc) => {
-        players.value = [...players.value, doc.data().name]
-      })
-    })
-
-    const docref = doc(db, "rooms", route.params.id)
-    const componentunsub = onSnapshot(docref, (Snapshot) => {
-      router.replace(
-        `/${route.params.id}/${route.params.playerId}/${
-          Snapshot.data().currentComponent
-        }`
-      )
-    })
-
-    const random1 = ref("")
-    const random2 = ref("")
-    const playerNum = ref(0)
     const enter = (playerName) => {
       players.value.push(playerName)
       playerNum.value = players.value.indexOf(playerName)
@@ -69,35 +48,32 @@ export default {
         data,
         { merge: true }
       )
-      router.replace(`/${route.params.id}/${playerNum.value}/playerlist`)
+      router.push(`/${route.params.id}/playerlist`)
     }
 
+    const random1 = ref(0)
+    const random2 = ref(0)
     const shuffle = () => {
-      const compodata = { currentComponent: "shufflecheck" }
-      updateDoc(doc(db, "rooms", route.params.id), compodata)
       random1.value = getRandomInt(players.value.length)
       random2.value = getRandomInt(players.value.length)
-
       while (random1.value === random2.value) {
         random2.value = getRandomInt(players.value.length)
       }
+      const compodata = { currentComponent: "shufflecheck" }
+      updateDoc(doc(db, "rooms", route.params.id), compodata)
 
-      shuffleplayersId.value = [random1.value, random2.value]
       const data = {
         shuffleplayersId: [random1.value, random2.value],
       }
       updateDoc(doc(db, "rooms", route.params.id), data)
     }
 
-    onUnmounted(() => {
-      playerunsub()
-      componentunsub()
-    })
     return {
       enter,
       shuffle,
       playerNum,
       players,
+      shuffleplayersId,
     }
   },
 }

@@ -11,7 +11,7 @@ import ResultView from "@/components/ResultView.vue"
 
 const routes = [
   {
-    path: "/:id/:playerId",
+    path: "/:id",
     name: "gameview",
     component: GameView,
     children: [

@@ -1,6 +1,6 @@
 <template>
   <h1>題名</h1>
-  <router-link :to="`/${docId}/0/homeview`" class="navigation__link">
+  <router-link :to="`/${docId}/homeview`" class="navigation__link">
     <div>
       <button>start!</button>
     </div>
