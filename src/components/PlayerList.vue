@@ -32,7 +32,7 @@ import {
 } from "firebase/firestore"
 import { ref, onUnmounted } from "vue"
 import { db } from "@/firebase.js"
-import { players, shuffleplayersId } from "@/lib/game.js"
+import { players, shuffleplayersId, getRandomInt } from "@/lib/game.js"
 import { useRoute, useRouter } from "vue-router"
 
 export default {
@@ -40,7 +40,6 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const Ref = collection(db, "rooms", route.params.id, "players")
-    // orderBy("timestamp", "desc")
 
     const playerunsub = onSnapshot(Ref, (Snapshot) => {
       players.value = []
@@ -71,10 +70,6 @@ export default {
         { merge: true }
       )
       router.replace(`/${route.params.id}/${playerNum.value}/playerlist`)
-    }
-
-    const getRandomInt = (max) => {
-      return Math.floor(Math.random() * max)
     }
 
     const shuffle = () => {
