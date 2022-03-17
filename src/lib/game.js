@@ -4,6 +4,7 @@ import { ref } from "vue"
 // 共通で使う状態
 export const players = ref([])
 export const shuffleplayersId = ref([])
+export const docId = ref("")
 // export let unsubscribeGameData
 
 // export const subscribeGameData = () => {
@@ -20,3 +21,11 @@ export const shuffleplayersId = ref([])
 // }
 
 // firebaseで参加しているプレイヤーのリストを取得して、リアルタイムに反映する
+
+// export function componentunsub = onSnapshot(Ref, (Snapshot) => {
+//     router.replace(
+//       `/${route.params.id}/${route.params.playerId}/${
+//         Snapshot.data().currentComponent
+//       }`
+//     )
+//   })

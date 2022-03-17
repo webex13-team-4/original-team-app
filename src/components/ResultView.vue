@@ -9,64 +9,62 @@
 </template>
 
 <script>
-// import { getDoc, doc } from "firebase/firestore"
-// import { db } from "@/firebase.js"
-// import { unsubscribeGameData } from "@/lib/game.js"
-import { onSnapshot, collection, getDoc, doc } from "firebase/firestore"
-import { onMounted, ref } from "vue"
+import { onSnapshot, collection, doc } from "firebase/firestore"
+import { ref, onUnmounted } from "vue"
 import { db } from "@/firebase.js"
-import { useRoute } from "vue-router"
-// import { players, shuffleplayersId } from "@/lib/game.js"
+import { useRoute, useRouter } from "vue-router"
+import { players, shuffleplayersId } from "@/lib/game.js"
 export default {
-  // data() {
-  //   return {
-  //     players: [],
-  //     shuffleNumber: [],
-  //   }
-  // },
-  // created() {
-  //   const docRef = doc(db, "rooms", this.$route.params.id)
-  //   getDoc(docRef).then((docSnap) => {
-  //     this.shuffleNumber = docSnap.data().shufflenumbers
-  //     this.players = docSnap.data().players
-  //   })
-  // },
-  // unmounted() {
-  //   unsubscribeGameData()
-  // },
-  props: {
-    players: [],
-  },
   setup() {
     const route = useRoute()
+    const router = useRouter()
+    const Ref = collection(db, "rooms", route.params.id, "players")
+    const playerunsub = onSnapshot(Ref, (Snapshot) => {
+      players.value = []
+      Snapshot.forEach((doc) => {
+        players.value = [...players.value, doc.data().name]
+      })
+    })
+
+    const docref = doc(db, "rooms", route.params.id)
+    const componentunsub = onSnapshot(docref, (Snapshot) => {
+      router.replace(
+        `/${route.params.id}/${route.params.playerId}/${
+          Snapshot.data().currentComponent
+        }`
+      )
+    })
+    const shuffleref = doc(db, "rooms", route.params.id)
+    const shuffleunsub = onSnapshot(shuffleref, (Snapshot) => {
+      shuffleplayersId.value = []
+      shuffleplayersId.value = Snapshot.data().shuffleplayersId
+    })
+
     const votedId = ref([])
-    const shuffleplayersId = ref([])
-
-    onMounted(() => {
-      // 投票結果算出するのに二重配列使うしかない？
-      getDoc(doc(db, "rooms", route.params.id)).then((Snapshot) => {
-        shuffleplayersId.value = []
-        shuffleplayersId.value = Snapshot.data().shuffleplayersId
+    const voteRef = collection(db, "rooms", route.params.id, "votes")
+    const voteunsub = onSnapshot(voteRef, (Snapshot) => {
+      votedId.value = []
+      Snapshot.forEach((doc) => {
+        let temp = doc.data().votedId
+        if (temp[0] > temp[1]) {
+          let trash = temp[0]
+          temp[0] = temp[1]
+          temp[1] = trash
+        }
+        votedId.value = [...votedId.value, temp]
       })
+    })
 
-      const voteRef = collection(db, "rooms", route.params.id, "votes")
-      onSnapshot(voteRef, (Snapshot) => {
-        votedId.value = []
-        Snapshot.forEach((doc) => {
-          let temp = doc.data().votedId
-          // 昇順に揃える
-          if (temp[0] > temp[1]) {
-            let trash = temp[0]
-            temp[0] = temp[1]
-            temp[1] = trash
-          }
-          votedId.value = [...votedId.value, temp]
-        })
-      })
+    onUnmounted(() => {
+      playerunsub()
+      componentunsub()
+      shuffleunsub()
+      voteunsub()
     })
     return {
       shuffleplayersId,
       votedId,
+      players,
     }
   },
 }
