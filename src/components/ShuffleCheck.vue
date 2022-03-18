@@ -1,9 +1,14 @@
 <template>
   {{ text }}
-  <div>
+
+  <div v-if="playerNum === 0">
     <router-link :to="`/${$route.params.id}/chatview`" class="navigation__link">
-      <button v-on:click="enterChat">チャットに参加する。</button>
+      <button v-on:click="enterChat">チャットを開始する。</button>
     </router-link>
+  </div>
+
+  <div v-if="playerNum === 0">
+    制限時間<input type="number" v-model="time" />分
   </div>
 </template>
 
@@ -12,7 +17,7 @@ import { doc, updateDoc, onSnapshot } from "firebase/firestore"
 import { ref, onUnmounted } from "vue"
 import { db } from "@/firebase.js"
 import { useRoute } from "vue-router"
-import { players, shuffleplayersId, playerNum } from "@/lib/game.js"
+import { players, shuffleplayersId, playerNum, time } from "@/lib/game.js"
 export default {
   setup() {
     const route = useRoute()
@@ -48,6 +53,8 @@ export default {
       text,
       enterChat,
       shuffleplayersId,
+      playerNum,
+      time,
     }
   },
 }

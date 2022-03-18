@@ -29,6 +29,7 @@ export const playersSubscribe = () => {
 }
 
 export const shuffleplayersId = ref([])
+export const time = ref("")
 
 export const getRandomInt = (max) => {
   return Math.floor(Math.random() * max)

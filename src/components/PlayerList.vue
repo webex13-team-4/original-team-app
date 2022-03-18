@@ -4,11 +4,6 @@
     <input type="text" v-model="playerName" />
     <button v-on:click="enter(playerName)">この名前で入る。</button>
   </div>
-  <div>
-    {{ players }}
-  </div>
-
-  <button>招待</button>
 
   <div v-if="playerNum === 0">
     <router-link
@@ -17,14 +12,17 @@
     >
       <button v-on:click="shuffle">シャッフル</button>
     </router-link>
+    <button v-on:click="copyLink">招待</button>
   </div>
 
-  制限時間<input type="number" />分
+  <div>
+    {{ players }}
+  </div>
 </template>
 
 <script>
 import { doc, updateDoc, setDoc } from "firebase/firestore"
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
 import { db } from "@/firebase.js"
 import {
   players,
@@ -36,8 +34,20 @@ import { useRoute, useRouter } from "vue-router"
 
 export default {
   setup() {
+    onMounted(() => {
+      if (playerNum.value !== 0) {
+        window.onload = () => {
+          alert("名前を入力してね！")
+        }
+      }
+    })
+
     const route = useRoute()
     const router = useRouter()
+    const copyLink = async () => {
+      await navigator.clipboard.writeText(location.href)
+      alert("招待リンクをコピーしました!")
+    }
 
     const enter = (playerName) => {
       players.value.push(playerName)
@@ -74,6 +84,7 @@ export default {
       playerNum,
       players,
       shuffleplayersId,
+      copyLink,
     }
   },
 }
