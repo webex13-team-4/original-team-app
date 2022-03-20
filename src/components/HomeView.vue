@@ -16,7 +16,6 @@ import { setDoc, doc, updateDoc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 import { useRoute } from "vue-router"
 import { playerNum } from "@/lib/game.js"
-
 const route = useRoute()
 const start = (playerName) => {
   const data = { name: playerName }

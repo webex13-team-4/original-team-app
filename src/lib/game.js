@@ -2,12 +2,11 @@ import { ref } from "vue"
 import { onSnapshot, doc, collection } from "firebase/firestore"
 import { db } from "@/firebase.js"
 import { useRoute, useRouter } from "vue-router"
-// 共通で使う状態
 
 export const playerNum = ref("")
 
 export const componentSubscribe = () => {
-  console.log("通信を開始します...!")
+  // console.log("通信を開始します...!")
   const route = useRoute()
   const router = useRouter()
   const Ref = doc(db, "rooms", route.params.id)
@@ -28,8 +27,8 @@ export const playersSubscribe = () => {
   })
 }
 
+export const votes = ref([])
 export const shuffleplayersId = ref([])
-export const time = ref("")
 
 export const getRandomInt = (max) => {
   return Math.floor(Math.random() * max)

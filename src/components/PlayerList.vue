@@ -2,7 +2,7 @@
   <h1>プレイヤー一覧</h1>
   <div>
     <input type="text" v-model="playerName" />
-    <button v-on:click="enter(playerName)">この名前で入る。</button>
+    <button v-on:click="enter">この名前で入る。</button>
   </div>
 
   <div v-if="playerNum === 0">
@@ -22,7 +22,7 @@
 
 <script>
 import { doc, updateDoc, setDoc } from "firebase/firestore"
-import { ref, onMounted } from "vue"
+import { ref } from "vue"
 import { db } from "@/firebase.js"
 import {
   players,
@@ -34,13 +34,13 @@ import { useRoute, useRouter } from "vue-router"
 
 export default {
   setup() {
-    onMounted(() => {
-      if (playerNum.value !== 0) {
-        window.onload = () => {
-          alert("名前を入力してね！")
-        }
-      }
-    })
+    // onMounted(() => {
+    //   if (playerNum.value !== 0) {
+    //     window.onload = () => {
+    //       alert("名前を入力してね！")
+    //     }
+    //   }
+    // })
 
     const route = useRoute()
     const router = useRouter()
@@ -49,15 +49,18 @@ export default {
       alert("招待リンクをコピーしました!")
     }
 
-    const enter = (playerName) => {
-      players.value.push(playerName)
-      playerNum.value = players.value.indexOf(playerName)
-      const data = { name: playerName }
+    const playerName = ref("")
+    const enter = () => {
+      players.value.push(playerName.value)
+      playerNum.value = players.value.indexOf(playerName.value)
+      const data = { name: playerName.value }
       setDoc(
         doc(db, "rooms", route.params.id, "players", `${playerNum.value}`),
         data,
         { merge: true }
-      )
+      ).then(() => {
+        playerName.value = ""
+      })
       router.push(`/${route.params.id}/playerlist`)
     }
 
@@ -85,6 +88,7 @@ export default {
       players,
       shuffleplayersId,
       copyLink,
+      playerName,
     }
   },
 }

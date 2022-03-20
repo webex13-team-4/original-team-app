@@ -11,9 +11,11 @@
   </div>
 
   <div v-else>みんな投票中だよ！</div>
-  <router-link :to="`/${$route.params.id}/resultview`" class="navigation__link">
+  <!-- <router-link :to="`/${$route.params.id}/resultview`" class="navigation__link">
     <button v-on:click="exitvote">終了</button>
-  </router-link>
+  </router-link> -->
+
+  {{ votes }}
 </template>
 
 <script>
@@ -27,20 +29,25 @@ import {
 import { ref, onUnmounted } from "vue"
 import { db } from "@/firebase.js"
 import { useRoute, useRouter } from "vue-router"
-import { players, shuffleplayersId, playerNum } from "@/lib/game.js"
+import { players, shuffleplayersId, playerNum, votes } from "@/lib/game.js"
 export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
 
     const checkedplayersId = ref([])
-    const votes = ref([])
 
     const Ref = collection(db, "rooms", route.params.id, "votes")
     const votesUnsubscribe = onSnapshot(Ref, (Snapshot) => {
       votes.value = []
       Snapshot.forEach((doc) => {
-        votes.value = [...votes.value, doc.data().voter]
+        let temp = doc.data().votedId
+        if (temp[0] > temp[1]) {
+          let trash = temp[0]
+          temp[0] = temp[1]
+          temp[1] = trash
+        }
+        votes.value = [...votes.value, temp]
       })
       if (votes.value.length === players.value.length - 2) {
         router.push(`/${route.params.id}/resultview`)
@@ -70,6 +77,7 @@ export default {
       players,
       shuffleplayersId,
       playerNum,
+      votes,
     }
   },
 }
