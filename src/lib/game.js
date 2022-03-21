@@ -27,7 +27,7 @@ export const playersSubscribe = () => {
   })
 }
 
-export const votes = ref([])
+export const votedIds = ref([])
 export const shuffleplayersId = ref([])
 
 export const getRandomInt = (max) => {

@@ -9,38 +9,39 @@
       players[shuffleplayersId[1]]
     }}が入れ替わってました!
   </div>
-  {{ votes }}
+  {{ votedIds }}
 </template>
 
 <script>
 import { ref } from "vue"
-import { players, shuffleplayersId, votes } from "@/lib/game.js"
+import { players, shuffleplayersId, votedIds } from "@/lib/game.js"
 export default {
   setup() {
     const maxCount = ref(0)
     const maxVotedIds = ref([])
 
-    for (let j = 0; j < votes.value.length; j++) {
+    // 最頻値を求める
+    for (let j = 0; j < votedIds.value.length; j++) {
       let count = 0
-      for (let i = 0; i < votes.value.length; i++) {
-        if (votes.value[j] === votes.value[i]) {
+      for (let i = 0; i < votedIds.value.length; i++) {
+        if (votedIds.value[j] === votedIds.value[i]) {
           count = count + 1
         }
       }
       if (maxCount.value < count) {
         maxCount.value = count
-        maxVotedIds.value = votes.value[j]
+        maxVotedIds.value = votedIds.value[j]
       } else if (
         maxCount.value === count &&
-        !maxVotedIds.value.includes(votes.value[j])
+        !maxVotedIds.value.includes(votedIds.value[j])
       ) {
-        maxVotedIds.value.push(votes.value[j])
+        maxVotedIds.value.push(votedIds.value[j])
       }
     }
 
     return {
       shuffleplayersId,
-      votes,
+      votedIds,
       players,
     }
   },

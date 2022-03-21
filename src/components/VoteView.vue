@@ -29,7 +29,7 @@ import {
 import { ref, onUnmounted } from "vue"
 import { db } from "@/firebase.js"
 import { useRoute, useRouter } from "vue-router"
-import { players, shuffleplayersId, playerNum, votes } from "@/lib/game.js"
+import { players, shuffleplayersId, playerNum, votedIds } from "@/lib/game.js"
 export default {
   setup() {
     const route = useRoute()
@@ -37,9 +37,10 @@ export default {
 
     const checkedplayersId = ref([])
 
+    // 投票をリアルタイムで更新
     const Ref = collection(db, "rooms", route.params.id, "votes")
     const votesUnsubscribe = onSnapshot(Ref, (Snapshot) => {
-      votes.value = []
+      votedIds.value = []
       Snapshot.forEach((doc) => {
         let temp = doc.data().votedId
         if (temp[0] > temp[1]) {
@@ -47,24 +48,22 @@ export default {
           temp[0] = temp[1]
           temp[1] = trash
         }
-        votes.value = [...votes.value, temp]
+        votedIds.value = [...votedIds.value, temp]
       })
-      if (votes.value.length === players.value.length - 2) {
+      if (votedIds.value.length === players.value.length - 2) {
         router.push(`/${route.params.id}/resultview`)
+        const compodata = { currentComponent: "resultview" }
+        updateDoc(doc(db, "rooms", route.params.id), compodata)
       }
     })
 
+    // 投票機能
     const vote = () => {
       const data = {
         votedId: checkedplayersId.value,
         voter: playerNum.value,
       }
       addDoc(collection(db, "rooms", route.params.id, "votes"), data)
-    }
-
-    const exitvote = () => {
-      const compodata = { currentComponent: "resultview" }
-      updateDoc(doc(db, "rooms", route.params.id), compodata)
     }
     onUnmounted(() => {
       votesUnsubscribe()
@@ -73,11 +72,10 @@ export default {
     return {
       vote,
       checkedplayersId,
-      exitvote,
       players,
       shuffleplayersId,
       playerNum,
-      votes,
+      votedIds,
     }
   },
 }
