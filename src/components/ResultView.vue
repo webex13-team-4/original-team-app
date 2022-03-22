@@ -9,7 +9,6 @@
       players[shuffleplayersId[1]]
     }}が入れ替わってました!
   </div>
-  {{ votedIds }}
 </template>
 
 <script>
@@ -17,25 +16,37 @@ import { ref } from "vue"
 import { players, shuffleplayersId, votedIds } from "@/lib/game.js"
 export default {
   setup() {
-    const maxCount = ref(0)
     const maxVotedIds = ref([])
+    const MostVotedPairs = ref()
 
-    // 最頻値を求める
-    for (let j = 0; j < votedIds.value.length; j++) {
-      let count = 0
-      for (let i = 0; i < votedIds.value.length; i++) {
-        if (votedIds.value[j] === votedIds.value[i]) {
-          count = count + 1
-        }
+    const getMostVotedPairs = (array) => {
+      const obj = {}
+      for (let i = 0; i < array.length; i++) {
+        obj[String(array[i])] = 0
       }
-      if (maxCount.value < count) {
-        maxCount.value = count
-        maxVotedIds.value = votedIds.value[j]
-      } else if (
-        maxCount.value === count &&
-        !maxVotedIds.value.includes(votedIds.value[j])
+      for (let i = 0; i < array.length; i++) {
+        obj[String(array[i])] += 1
+      }
+      return obj
+    }
+
+    MostVotedPairs.value = getMostVotedPairs(votedIds.value)
+
+    let pairs = Object.entries(MostVotedPairs.value)
+    pairs.sort(function (p1, p2) {
+      let p1Val = p1[1],
+        p2Val = p2[1]
+      return p2Val - p1Val
+    })
+    MostVotedPairs.value = Object.fromEntries(pairs)
+
+    for (let i = 0; i < pairs.length; i++) {
+      if (
+        Object.entries(MostVotedPairs.value)[0][1] ===
+        Object.entries(MostVotedPairs.value)[i][1]
       ) {
-        maxVotedIds.value.push(votedIds.value[j])
+        let data = Object.entries(MostVotedPairs.value)[i][0]
+        maxVotedIds.value.push(JSON.parse("[" + data + "]"))
       }
     }
 
@@ -43,6 +54,8 @@ export default {
       shuffleplayersId,
       votedIds,
       players,
+      MostVotedPairs,
+      maxVotedIds,
     }
   },
 }

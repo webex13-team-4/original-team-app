@@ -1,8 +1,8 @@
 <template>
   <h1>プレイヤー一覧</h1>
+
   <div>
-    <input type="text" v-model="playerName" />
-    <button v-on:click="enter">この名前で入る。</button>
+    {{ players }}
   </div>
 
   <div v-if="playerNum === 0">
@@ -15,8 +15,9 @@
     <button v-on:click="copyLink">招待</button>
   </div>
 
-  <div>
-    {{ players }}
+  <div v-else>
+    <input type="text" v-model="playerName" />
+    <button v-on:click="enter" :disabled="checked">この名前で入る。</button>
   </div>
 </template>
 
@@ -48,9 +49,10 @@ export default {
       await navigator.clipboard.writeText(location.href)
       alert("招待リンクをコピーしました!")
     }
-
+    const checked = ref(false)
     const playerName = ref("")
     const enter = () => {
+      checked.value = true
       players.value.push(playerName.value)
       playerNum.value = players.value.indexOf(playerName.value)
       const data = { name: playerName.value }
@@ -89,6 +91,7 @@ export default {
       shuffleplayersId,
       copyLink,
       playerName,
+      checked,
     }
   },
 }

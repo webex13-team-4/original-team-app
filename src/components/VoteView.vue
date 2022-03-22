@@ -6,7 +6,7 @@
       <label>{{ playerName }}</label>
     </div>
     <div>
-      <button @click="vote">投票する</button>
+      <button @click="vote" :disabled="voted">投票する</button>
     </div>
   </div>
 
@@ -14,8 +14,6 @@
   <!-- <router-link :to="`/${$route.params.id}/resultview`" class="navigation__link">
     <button v-on:click="exitvote">終了</button>
   </router-link> -->
-
-  {{ votes }}
 </template>
 
 <script>
@@ -58,7 +56,10 @@ export default {
     })
 
     // 投票機能
+    const voted = ref(false)
+
     const vote = () => {
+      voted.value = true
       const data = {
         votedId: checkedplayersId.value,
         voter: playerNum.value,
@@ -76,6 +77,7 @@ export default {
       shuffleplayersId,
       playerNum,
       votedIds,
+      voted,
     }
   },
 }
