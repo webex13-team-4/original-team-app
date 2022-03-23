@@ -1,68 +1,83 @@
 <template>
-  <div v-if="!shuffle">
+  <div v-if="!shuffleplayersId.includes(playerNum)">
     誰と誰が入れ替わっている？
     <div v-for="(playerName, playerId) in players" :key="playerId">
       <input type="checkbox" :value="playerId" v-model="checkedplayersId" />
       <label>{{ playerName }}</label>
     </div>
+    <div>
+      <button @click="vote" :disabled="voted">投票する</button>
+    </div>
   </div>
 
   <div v-else>みんな投票中だよ！</div>
-  <button v-on:click="exitvote">終了</button>
-  {{ checkedplayersId }}
-
-  <div>
-    <button @click="vote">投票する</button>
-  </div>
+  <!-- <router-link :to="`/${$route.params.id}/resultview`" class="navigation__link">
+    <button v-on:click="exitvote">終了</button>
+  </router-link> -->
 </template>
 
 <script>
-import { getDoc, doc, collection, addDoc } from "firebase/firestore"
-import { ref, onMounted } from "vue"
+import {
+  doc,
+  collection,
+  addDoc,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore"
+import { ref, onUnmounted } from "vue"
 import { db } from "@/firebase.js"
-import { useRoute } from "vue-router"
-// import { players, shuffleplayersId } from "@/lib/game.js"
+import { useRoute, useRouter } from "vue-router"
+import { players, shuffleplayersId, playerNum, votedIds } from "@/lib/game.js"
 export default {
-  props: {
-    players: [],
-  },
-
-  setup(props, { emit }) {
-    const shuffle = ref("")
+  setup() {
     const route = useRoute()
+    const router = useRouter()
+
     const checkedplayersId = ref([])
-    const shuffleplayersId = ref([])
+
+    // 投票をリアルタイムで更新
+    const Ref = collection(db, "rooms", route.params.id, "votes")
+    const votesUnsubscribe = onSnapshot(Ref, (Snapshot) => {
+      votedIds.value = []
+      Snapshot.forEach((doc) => {
+        let temp = doc.data().votedId
+        if (temp[0] > temp[1]) {
+          let trash = temp[0]
+          temp[0] = temp[1]
+          temp[1] = trash
+        }
+        votedIds.value = [...votedIds.value, temp]
+      })
+      if (votedIds.value.length === players.value.length - 2) {
+        router.push(`/${route.params.id}/resultview`)
+        const compodata = { currentComponent: "resultview" }
+        updateDoc(doc(db, "rooms", route.params.id), compodata)
+      }
+    })
+
+    // 投票機能
+    const voted = ref(false)
 
     const vote = () => {
+      voted.value = true
       const data = {
         votedId: checkedplayersId.value,
-        voter: route.params.playerId,
+        voter: playerNum.value,
       }
       addDoc(collection(db, "rooms", route.params.id, "votes"), data)
     }
-
-    const exitvote = () => {
-      emit("change-component", "ResultView")
-    }
-
-    onMounted(() => {
-      getDoc(doc(db, "rooms", route.params.id)).then((Snapshot) => {
-        shuffleplayersId.value = []
-        shuffleplayersId.value = Snapshot.data().shuffleplayersId
-        if (shuffleplayersId.value[0] == route.params.playerId) {
-          shuffle.value = true
-        } else if (shuffleplayersId.value[1] == route.params.playerId) {
-          shuffle.value = true
-        } else {
-          shuffle.value = false
-        }
-      })
+    onUnmounted(() => {
+      votesUnsubscribe()
     })
+
     return {
-      shuffle,
       vote,
       checkedplayersId,
-      exitvote,
+      players,
+      shuffleplayersId,
+      playerNum,
+      votedIds,
+      voted,
     }
   },
 }

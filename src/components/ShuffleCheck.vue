@@ -1,52 +1,60 @@
 <template>
   {{ text }}
-  <div>
-    <button v-on:click="enterChat">チャットに参加する。</button>
+
+  <div v-if="playerNum === 0">
+    <button v-on:click="enterChat">チャットを開始する。</button>
   </div>
-  <!-- {{ players }}
-  {{ shuffleplayersId }}
-  {{ playerId }} -->
+
+  <div v-if="playerNum === 0">
+    制限時間<input type="number" v-model="time" />分
+  </div>
 </template>
 
 <script>
-import { getDoc, doc } from "firebase/firestore"
-import { ref, onMounted } from "vue"
+import { doc, updateDoc, onSnapshot } from "firebase/firestore"
+import { ref, onUnmounted } from "vue"
 import { db } from "@/firebase.js"
 import { useRoute } from "vue-router"
+import { players, shuffleplayersId, playerNum } from "@/lib/game.js"
 export default {
-  props: {
-    players: [],
-  },
-  setup(props, { emit }) {
-    const text = ref("")
-    const shuffleplayersId = ref([])
+  setup() {
     const route = useRoute()
+    const text = ref("")
+    const time = ref("")
+
+    const shuffleref = doc(db, "rooms", route.params.id)
+    const shuffleunsub = onSnapshot(shuffleref, async (Snapshot) => {
+      shuffleplayersId.value = []
+      shuffleplayersId.value = await Snapshot.data().shuffleplayersId
+      if (shuffleplayersId.value[0] === playerNum.value) {
+        text.value = `あなたはシャッフルされています。
+     ${players.value[shuffleplayersId.value[1]]}
+   になりすましてください。`
+      } else if (shuffleplayersId.value[1] === playerNum.value) {
+        text.value = `あなたはシャッフルされています。
+     ${players.value[shuffleplayersId.value[0]]}
+   になりすましてください。`
+      } else {
+        text.value = "あなたはシャッフルされていません！"
+      }
+    })
+
     const enterChat = () => {
-      emit("change-component", "ChatView")
+      const compodata = { currentComponent: "chatview" }
+      updateDoc(doc(db, "rooms", route.params.id), compodata)
+      const timedata = { time: time.value * 60, sec: "", min: "" }
+      updateDoc(doc(db, "rooms", route.params.id), timedata)
     }
-    onMounted(() => {
-      getDoc(doc(db, "rooms", route.params.id)).then((Snapshot) => {
-        shuffleplayersId.value = []
-        shuffleplayersId.value = Snapshot.data().shuffleplayersId
-        if (shuffleplayersId.value.length === 2) {
-          if (shuffleplayersId.value[0] == route.params.playerId) {
-            text.value = `あなたはシャッフルされています。
-     ${props.players[shuffleplayersId.value[1]]}
-   になりすましてください。`
-          } else if (shuffleplayersId.value[1] == route.params.playerId) {
-            text.value = `あなたはシャッフルされています。
-     ${props.players[shuffleplayersId.value[0]]}
-   になりすましてください。`
-          } else {
-            text.value = "あなたはシャッフルされていません！"
-          }
-        }
-      })
+
+    onUnmounted(() => {
+      shuffleunsub()
     })
     return {
       text,
       enterChat,
       shuffleplayersId,
+      playerNum,
+      time,
     }
   },
 }
