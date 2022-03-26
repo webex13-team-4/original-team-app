@@ -1,21 +1,28 @@
 <template>
-  <h1>プレイヤー一覧</h1>
-  <div>
-    <input type="text" v-model="playerName" />
-    <button v-on:click="enter(playerName)">この名前で入る。</button>
-  </div>
-  <div>
-    {{ players }}
-    <!-- {{ playerNum }} -->
-  </div>
+  <div class="players">
+    <h1 class="player">プレイヤー一覧</h1>
+    <input
+      type="text"
+      v-model="playerName"
+      style="width: 300px; height: 40px"
+      placeholder="ニックネーム"
+      class="playerinput"
+    />
+    <div class="playerbtn">
+      <button v-on:click="enter(playerName)">この名前で入る。</button>
+    </div>
+    <div class="text">
+      {{ players }}
+      <!-- {{ playerNum }} -->
+    </div>
 
-  <button>招待</button>
+    <div>
+      <button class="playerbtn2">招待</button>
+      <button v-on:click="shuffle" class="playerbtn3">シャッフル</button>
+    </div>
 
-  <div>
-    <button v-on:click="shuffle">シャッフル</button>
+    制限時間<input type="number" />分
   </div>
-
-  制限時間<input type="number" />分
 </template>
 
 <script>
@@ -87,3 +94,114 @@ export default {
   },
 }
 </script>
+
+<style>
+.players {
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 120px 400px;
+  background: linear-gradient(#211469, #1704a7);
+  border: solid 5px #7767cf;
+  border-radius: 30px;
+}
+
+.player {
+  font-weight: bold;
+  white-space: nowrap;
+  position: relative;
+  top: -40px;
+}
+
+.playerbtn button {
+  color: blue;
+  background-color: white;
+  opacity: 0.8;
+  font-weight: bold;
+  border-radius: 5px;
+  box-shadow: 0px 4px 2px rgb(0, 0, 0);
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.playerbtn button:hover {
+  opacity: 1;
+}
+
+.playerbtn button:active {
+  box-shadow: none;
+  position: relative;
+  top: 6px;
+}
+.playerbtn2 {
+  color: blue;
+  background-color: white;
+  opacity: 0.8;
+  font-weight: bold;
+  border-radius: 5px;
+  box-shadow: 0px 4px 2px rgb(0, 0, 0);
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.playerbtn2:hover {
+  opacity: 1;
+}
+
+.playerbtn2:active {
+  box-shadow: none;
+  position: relative;
+  top: 6px;
+}
+.playerbtn3 {
+  color: blue;
+  background-color: white;
+  opacity: 0.8;
+  font-weight: bold;
+  border-radius: 5px;
+  box-shadow: 0px 4px 2px rgb(0, 0, 0);
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 0 0 30px 20px;
+}
+
+.playerbtn3:hover {
+  opacity: 1;
+}
+
+.playerbtn3:active {
+  box-shadow: none;
+  position: relative;
+  top: 6px;
+}
+
+.playerinput {
+  background-color: #1704a7;
+  text-align: center;
+  font-weight: bold;
+  border: solid 2px white;
+  border-radius: 10px;
+  position: relative;
+  top: -20px;
+}
+
+.text {
+  color: white;
+  margin: 50px 0;
+  font-size: 20px;
+  animation: move-y 0.5s infinite alternate ease-in-out;
+  display: inline-block;
+}
+
+@keyframes move-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(10px);
+  }
+}
+</style>
