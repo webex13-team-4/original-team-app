@@ -5,6 +5,7 @@
       <button>start!</button>
     </div>
   </router-link>
+  {{ docId }}
 </template>
 
 <script>

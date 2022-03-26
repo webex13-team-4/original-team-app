@@ -1,15 +1,128 @@
 <template>
   <h1>Chat</h1>
-  {{ irekawari }}が参加しました。
-  <div>
-    <input type="text" v-model="message" />
-    <button v-on:click="send">send</button>
+  <div class="time-limit">残り{{ min }}分{{ sec }}秒</div>
+  <div class="chat-container">
+    まずは挨拶してみましょう！
+    <div v-for="(chat, id) in chats" :key="id">
+      <div v-if="chat.name === irekawari" class="right-container">
+        <p class="player-name">{{ chat.name }}</p>
+        <div class="right-says">
+          <p class="message-container">{{ chat.message }}</p>
+        </div>
+      </div>
+      <div v-else class="left-container">
+        <p class="player-name">{{ chat.name }}</p>
+        <div class="left-says">
+          <p class="message-container">{{ chat.message }}</p>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>残り時間{{ min }}分{{ sec }}秒</div>
-  <div v-for="(chat, id) in chats" :key="id">
-    {{ chat.name }}:{{ chat.message }}
+  <div class="message-input">
+    <input
+      type="text"
+      v-model="message"
+      class="text-input"
+      v-on:keydown.enter="send"
+      @compositionstart="composing = true"
+      @compositionend="composing = false"
+      :placeholder="`${irekawari}としてメッセージを入力`"
+    />
   </div>
 </template>
+
+<style scoped>
+.chat-container {
+  margin-bottom: 20px;
+  overflow: scroll;
+  height: 600px;
+}
+
+.text-input {
+  display: inline-block;
+  width: 700px;
+}
+
+.time-limit {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  font-size: 25px;
+}
+
+.right-container {
+  margin-right: 20%;
+  text-align: right;
+  margin-bottom: 10px;
+}
+.left-container {
+  margin-left: 20%;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.right-says {
+  display: inline-block;
+  position: relative;
+  margin: 0 0 0 50px;
+  padding: 10px;
+  max-width: 250px;
+  border-radius: 12px;
+  background: #edf1ee;
+}
+
+.message-container {
+  word-wrap: break-word;
+  white-space: normal;
+  text-align: left;
+}
+
+.right-says:after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 3px;
+  right: -19px;
+  border: 8px solid transparent;
+  border-left: 18px solid #edf1ee;
+  -webkit-transform: rotate(35deg);
+  transform: rotate(-35deg);
+}
+.right-says p {
+  margin: 0;
+  padding: 0;
+}
+.left-says {
+  display: inline-block;
+  position: relative;
+  margin: 0 50px 0 0;
+  padding: 10px;
+  max-width: 250px;
+  border-radius: 12px;
+  background: #edf1ee;
+}
+
+.left-says:after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 3px;
+  left: -19px;
+  border: 8px solid transparent;
+  border-right: 18px solid #edf1ee;
+  -webkit-transform: rotate(35deg);
+  transform: rotate(35deg);
+}
+.left-says p {
+  margin: 0;
+  padding: 0;
+}
+
+.player-name {
+  margin-bottom: 0;
+  font-size: 5px;
+}
+</style>
 
 <script>
 import {
@@ -64,18 +177,21 @@ export default {
       irekawari.value = players.value[playerNum.value]
     }
 
+    const composing = ref(false)
     const message = ref("")
     const send = () => {
-      const data = {
-        name: irekawari.value,
-        message: message.value,
-        now: new Date(),
-      }
-      addDoc(collection(db, "rooms", route.params.id, "messages"), data).then(
-        () => {
-          message.value = ""
+      if (!composing.value && message.value) {
+        const data = {
+          name: irekawari.value,
+          message: message.value,
+          now: new Date(),
         }
-      )
+        addDoc(collection(db, "rooms", route.params.id, "messages"), data).then(
+          () => {
+            message.value = ""
+          }
+        )
+      }
     }
 
     const chatRef = query(
@@ -101,6 +217,7 @@ export default {
       send,
       chats,
       message,
+      composing,
     }
   },
 }
