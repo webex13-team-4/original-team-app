@@ -1,20 +1,44 @@
 <template>
-  <div v-if="!shuffleplayersId.includes(playerNum)">
-    誰と誰が入れ替わっている？
-    <div v-for="(playerName, playerId) in players" :key="playerId">
-      <input type="checkbox" :value="playerId" v-model="checkedplayersId" />
-      <label>{{ playerName }}</label>
+  <div v-if="!shuffleplayersId.includes(playerNum)" class="players-container">
+    <h1>入れ替わっているのは誰？2人選んでね!</h1>
+    <div
+      v-for="(playerName, playerId) in players"
+      :key="playerId"
+      v-on:click="votePlayers(playerId)"
+      class="players-list"
+      :class="{ buttonColor: checkedplayersId.includes(playerId) }"
+    >
+      {{ playerName }}
     </div>
     <div>
       <button @click="vote" :disabled="voted">投票する</button>
     </div>
   </div>
-
   <div v-else>みんな投票中だよ！</div>
-  <!-- <router-link :to="`/${$route.params.id}/resultview`" class="navigation__link">
-    <button v-on:click="exitvote">終了</button>
-  </router-link> -->
 </template>
+
+<style scoped>
+.players-list {
+  border: solid;
+  border-radius: 1rem;
+  width: 200px;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  padding: 10px;
+}
+
+.buttonColor {
+  background-color: #8d37b6;
+  color: white;
+}
+
+.players-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+}
+</style>
 
 <script>
 import {
@@ -59,12 +83,26 @@ export default {
     const voted = ref(false)
 
     const vote = () => {
-      voted.value = true
-      const data = {
-        votedId: checkedplayersId.value,
-        voter: playerNum.value,
+      if (checkedplayersId.value.length === 2) {
+        voted.value = true
+        const data = {
+          votedId: checkedplayersId.value,
+          voter: playerNum.value,
+        }
+        addDoc(collection(db, "rooms", route.params.id, "votes"), data)
+      } else {
+        alert("2人投票してね！")
       }
-      addDoc(collection(db, "rooms", route.params.id, "votes"), data)
+    }
+
+    const votePlayers = (playerId) => {
+      if (checkedplayersId.value.includes(playerId)) {
+        checkedplayersId.value = checkedplayersId.value.filter((elm) => {
+          return elm !== playerId
+        })
+      } else {
+        checkedplayersId.value.push(playerId)
+      }
     }
     onUnmounted(() => {
       votesUnsubscribe()
@@ -78,6 +116,7 @@ export default {
       playerNum,
       votedIds,
       voted,
+      votePlayers,
     }
   },
 }
