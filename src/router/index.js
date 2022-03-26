@@ -2,18 +2,26 @@ import { createRouter, createWebHistory } from "vue-router"
 import ChatApp from "@/views/ChatApp.vue"
 import GameView from "../views/GameView.vue"
 import StartView from "../views/StartView.vue"
-// import PlayerList from "../views/PlayerList.vue"
-// import ShuffleCheck from "../views/ShuffleCheck.vue"
-// import ChatView from "../views/ChatView.vue"
-// import VoteView from "../views/VoteView.vue"
-// import ResultView from "../views/ResultView.vue"
+import HomeView from "@/components/HomeView.vue"
+import PlayerList from "@/components/PlayerList.vue"
+import ShuffleCheck from "@/components/ShuffleCheck.vue"
+import ChatView from "@/components/ChatView.vue"
+import VoteView from "@/components/VoteView.vue"
+import ResultView from "@/components/ResultView.vue"
 
 const routes = [
   {
-    path: "/:id/:playerId",
+    path: "/:id",
     name: "gameview",
     component: GameView,
-    props: true,
+    children: [
+      { path: "homeview", component: HomeView },
+      { path: "playerlist", component: PlayerList },
+      { path: "shufflecheck", component: ShuffleCheck },
+      { path: "chatview", component: ChatView },
+      { path: "voteview", component: VoteView },
+      { path: "resultview", component: ResultView },
+    ],
   },
   {
     path: "/",

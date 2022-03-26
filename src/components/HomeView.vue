@@ -1,43 +1,32 @@
 <template>
-  <div class="home">
-    <!-- {{ docId }} -->
-    <input
-      type="text"
-      v-model="hostPlayer"
-      style="width: 300px; height: 40px"
-      placeholder="ニックネーム"
-      class="input"
-    /><br /><br />
-    <div class="btn">
+  <h1>ニックネームを入れてね！</h1>
+  <input type="text" v-model="hostPlayer" />
+  <div>
+    <router-link
+      :to="`/${$route.params.id}/playerlist`"
+      class="navigation__link"
+    >
       <button v-on:click="start(hostPlayer)">開始</button>
-    </div>
+    </router-link>
   </div>
 </template>
 
-<script>
-import { collection, addDoc } from "firebase/firestore"
+<script setup>
+import { setDoc, doc, updateDoc } from "firebase/firestore"
 import { db } from "@/firebase.js"
-import { ref } from "vue"
 import { useRoute } from "vue-router"
-
-export default {
-  setup(props, { emit }) {
-    const route = useRoute()
-    const docId = ref(route.params.id)
-    const start = (playerName) => {
-      const data = { name: playerName }
-      addDoc(collection(db, "rooms", docId.value, "players"), data)
-      emit("change-component", "PlayerList")
-    }
-    return {
-      docId,
-      start,
-    }
-  },
+import { playerNum } from "@/lib/game.js"
+const route = useRoute()
+const start = (playerName) => {
+  const data = { name: playerName }
+  setDoc(doc(db, "rooms", route.params.id, "players", "0"), data)
+  const compodata = { currentComponent: "playerlist" }
+  updateDoc(doc(db, "rooms", route.params.id), compodata)
+  playerNum.value = 0
 }
 </script>
 
-<style>
+<style scoped>
 .home {
   position: absolute;
   top: 50%;

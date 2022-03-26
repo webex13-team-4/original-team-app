@@ -1,75 +1,61 @@
 <template>
-  <div class="result">
-    <h1>結果発表</h1>
-    <div class="vote">1位{{ votedId }}</div>
-    <p class="resultp">実は・・</p>
-    <div class="resultd">
-      <span>{{ players[shuffleplayersId[0]] }}</span
-      >と<span>{{ players[shuffleplayersId[1]] }}</span
-      >が入れ替わってました!
-    </div>
+  <h1>結果発表</h1>
+  最も多く投票されたのは・・・
+  <div v-for="(voted, index) in maxVotedIds" :key="index">
+    {{ players[voted[0]] }}と{{ players[voted[1]] }}
+  </div>
+  <div>
+    実は・・{{ players[shuffleplayersId[0]] }}と{{
+      players[shuffleplayersId[1]]
+    }}が入れ替わってました!
   </div>
 </template>
 
 <script>
-// import { getDoc, doc } from "firebase/firestore"
-// import { db } from "@/firebase.js"
-// import { unsubscribeGameData } from "@/lib/game.js"
-import { onSnapshot, collection, getDoc, doc } from "firebase/firestore"
-import { onMounted, ref } from "vue"
-import { db } from "@/firebase.js"
-import { useRoute } from "vue-router"
-// import { players, shuffleplayersId } from "@/lib/game.js"
+import { ref } from "vue"
+import { players, shuffleplayersId, votedIds } from "@/lib/game.js"
 export default {
-  // data() {
-  //   return {
-  //     players: [],
-  //     shuffleNumber: [],
-  //   }
-  // },
-  // created() {
-  //   const docRef = doc(db, "rooms", this.$route.params.id)
-  //   getDoc(docRef).then((docSnap) => {
-  //     this.shuffleNumber = docSnap.data().shufflenumbers
-  //     this.players = docSnap.data().players
-  //   })
-  // },
-  // unmounted() {
-  //   unsubscribeGameData()
-  // },
-  props: {
-    players: [],
-  },
   setup() {
-    const route = useRoute()
-    const votedId = ref([])
-    const shuffleplayersId = ref([])
+    const maxVotedIds = ref([])
+    const MostVotedPairs = ref()
 
-    onMounted(() => {
-      // 投票結果算出するのに二重配列使うしかない？
-      getDoc(doc(db, "rooms", route.params.id)).then((Snapshot) => {
-        shuffleplayersId.value = []
-        shuffleplayersId.value = Snapshot.data().shuffleplayersId
-      })
+    const getMostVotedPairs = (array) => {
+      const obj = {}
+      for (let i = 0; i < array.length; i++) {
+        obj[String(array[i])] = 0
+      }
+      for (let i = 0; i < array.length; i++) {
+        obj[String(array[i])] += 1
+      }
+      return obj
+    }
 
-      const voteRef = collection(db, "rooms", route.params.id, "votes")
-      onSnapshot(voteRef, (Snapshot) => {
-        votedId.value = []
-        Snapshot.forEach((doc) => {
-          let temp = doc.data().votedId
-          // 昇順に揃える
-          if (temp[0] > temp[1]) {
-            let trash = temp[0]
-            temp[0] = temp[1]
-            temp[1] = trash
-          }
-          votedId.value = [...votedId.value, temp]
-        })
-      })
+    MostVotedPairs.value = getMostVotedPairs(votedIds.value)
+
+    let pairs = Object.entries(MostVotedPairs.value)
+    pairs.sort(function (p1, p2) {
+      let p1Val = p1[1],
+        p2Val = p2[1]
+      return p2Val - p1Val
     })
+    MostVotedPairs.value = Object.fromEntries(pairs)
+
+    for (let i = 0; i < pairs.length; i++) {
+      if (
+        Object.entries(MostVotedPairs.value)[0][1] ===
+        Object.entries(MostVotedPairs.value)[i][1]
+      ) {
+        let data = Object.entries(MostVotedPairs.value)[i][0]
+        maxVotedIds.value.push(JSON.parse("[" + data + "]"))
+      }
+    }
+
     return {
       shuffleplayersId,
-      votedId,
+      votedIds,
+      players,
+      MostVotedPairs,
+      maxVotedIds,
     }
   },
 }

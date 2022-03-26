@@ -1,22 +1,35 @@
 import { ref } from "vue"
-// import { onSnapshot } from "firebase/firestore"
+import { onSnapshot, doc, collection } from "firebase/firestore"
+import { db } from "@/firebase.js"
+import { useRoute, useRouter } from "vue-router"
 
-// 共通で使う状態
+export const playerNum = ref("")
+
+export const componentSubscribe = () => {
+  // console.log("通信を開始します...!")
+  const route = useRoute()
+  const router = useRouter()
+  const Ref = doc(db, "rooms", route.params.id)
+  return onSnapshot(Ref, (Snapshot) => {
+    router.push(`/${route.params.id}/${Snapshot.data().currentComponent}`)
+  })
+}
+
 export const players = ref([])
+export const playersSubscribe = () => {
+  const route = useRoute()
+  const Ref = collection(db, "rooms", route.params.id, "players")
+  return onSnapshot(Ref, (Snapshot) => {
+    players.value = []
+    Snapshot.forEach((doc) => {
+      players.value = [...players.value, doc.data().name]
+    })
+  })
+}
+
+export const votedIds = ref([])
 export const shuffleplayersId = ref([])
-// export let unsubscribeGameData
 
-// export const subscribeGameData = () => {
-//   // subscribeする
-//   // playersとか更新する
-//   const unsubscribe = onSnapshot((docSnap) => {
-//     const data = docSnap.data()
-//     console.log(data)
-//     if (data.players && data.players.length !== players.value.length) {
-//       players.value = data.players
-//     }
-//   })
-//   unsubscribeGameData = unsubscribe
-// }
-
-// firebaseで参加しているプレイヤーのリストを取得して、リアルタイムに反映する
+export const getRandomInt = (max) => {
+  return Math.floor(Math.random() * max)
+}
