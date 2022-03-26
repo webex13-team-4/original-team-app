@@ -61,7 +61,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .result {
   color: #211469;
   font-weight: bold;
@@ -76,6 +76,7 @@ export default {
   border: solid 5px #7767cf;
   white-space: nowrap;
 }
+
 h1 {
   position: relative;
   top: -80px;

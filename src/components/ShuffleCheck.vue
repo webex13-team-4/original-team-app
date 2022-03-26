@@ -61,7 +61,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .shuffle {
   position: absolute;
   top: 50%;

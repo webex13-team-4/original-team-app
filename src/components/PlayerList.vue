@@ -97,7 +97,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .players {
   color: white;
   position: absolute;
