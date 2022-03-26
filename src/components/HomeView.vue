@@ -25,3 +25,35 @@ const start = (playerName) => {
   playerNum.value = 0
 }
 </script>
+
+<style scoped>
+.home {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 200px 300px;
+  background: linear-gradient(#211469, #1704a7);
+  border: solid 5px #7767cf;
+  border-radius: 30px;
+}
+
+.input {
+  background-color: #1704a7;
+  text-align: center;
+  font-weight: bold;
+  border: solid 2px white;
+  border-radius: 10px;
+  position: relative;
+  top: -50px;
+}
+
+::placeholder {
+  color: white;
+}
+
+input,
+textarea {
+  color: white;
+}
+</style>
