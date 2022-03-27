@@ -6,7 +6,6 @@ import { useRoute, useRouter } from "vue-router"
 export const playerNum = ref("")
 
 export const componentSubscribe = () => {
-  // console.log("通信を開始します...!")
   const route = useRoute()
   const router = useRouter()
   const Ref = doc(db, "rooms", route.params.id)

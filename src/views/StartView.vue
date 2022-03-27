@@ -6,7 +6,6 @@
         <button>start!</button>
       </div> </router-link
     ><br /><br />
-    <p>{{ docId }}</p>
   </div>
 </template>
 
