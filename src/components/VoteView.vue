@@ -14,7 +14,7 @@
       <button @click="vote" :disabled="voted">投票する</button>
     </div>
   </div>
-  <div v-else>みんな投票中だよ！</div>
+  <div v-else class="another">みんな投票中だよ！</div>
 </template>
 
 <style scoped>
@@ -28,15 +28,58 @@
 }
 
 .buttonColor {
-  background-color: #8d37b6;
+  background-color: #1704a7;
   color: white;
 }
 
+button {
+  color: white;
+  background-color: #1704a7;
+  opacity: 0.8;
+  font-weight: bold;
+  border-radius: 5px;
+  box-shadow: 0px 4px 2px rgb(0, 0, 0);
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+button:active {
+  box-shadow: none;
+}
+
 .players-container {
+  color: #211469;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 50px 200px;
+  background-color: white;
+  border-radius: 30px;
+  border: solid 5px #7767cf;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-flow: column;
+}
+
+.another {
+  color: #211469;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 50px 200px;
+  background-color: white;
+  border-radius: 30px;
+  border: solid 5px #7767cf;
+  white-space: nowrap;
+  font-weight: bold;
 }
 </style>
 

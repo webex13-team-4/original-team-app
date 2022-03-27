@@ -1,11 +1,13 @@
 <template>
-  <h1>題名</h1>
-  <router-link :to="`/${docId}/homeview`" class="navigation__link">
-    <div>
-      <button>start!</button>
-    </div>
-  </router-link>
-  {{ docId }}
+  <div class="box">
+    <h1 class="title">PRETENDER</h1>
+    <router-link :to="`/${docId}/homeview`" class="navigation__link">
+      <div class="btn">
+        <button>start!</button>
+      </div> </router-link
+    ><br /><br />
+    <p>{{ docId }}</p>
+  </div>
 </template>
 
 <script>
@@ -33,17 +35,13 @@ export default {
   margin: 0;
   padding: 0;
 }
-html {
-  height: 100%;
-  background: linear-gradient(#211469, #1704a7);
-}
 
 .box {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 200px 500px;
+  padding: 200px 350px;
   background: linear-gradient(#211469, #1704a7);
   border: solid 5px #7767cf;
   border-radius: 30px;
@@ -90,5 +88,10 @@ html {
   to {
     transform: translateY(10px);
   }
+}
+
+p {
+  color: white;
+  font-weight: bold;
 }
 </style>

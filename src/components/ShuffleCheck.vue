@@ -1,12 +1,17 @@
 <template>
-  {{ text }}
+  <div class="shuffle">
+    <div class="chattext">
+      {{ text }}
+    </div>
+    <div v-if="playerNum === 0">
+      <button v-on:click="enterChat" class="chatbtn">
+        チャットを開始する。
+      </button>
+    </div>
 
-  <div v-if="playerNum === 0">
-    <button v-on:click="enterChat">チャットを開始する。</button>
-  </div>
-
-  <div v-if="playerNum === 0">
-    制限時間<input type="number" v-model="time" />分
+    <div v-if="playerNum === 0">
+      <span>制限時間</span><input type="number" v-model="time" /><span>分</span>
+    </div>
   </div>
 </template>
 
@@ -123,5 +128,10 @@ export default {
   box-shadow: none;
   position: relative;
   top: 6px;
+}
+
+span {
+  font-weight: bold;
+  color: #211469;
 }
 </style>

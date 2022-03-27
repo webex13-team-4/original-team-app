@@ -5,6 +5,9 @@
 </template>
 
 <style>
+body {
+  background: linear-gradient(#211469, #1704a7);
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

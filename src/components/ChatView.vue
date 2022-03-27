@@ -2,7 +2,7 @@
   <h1>Chat</h1>
   <div class="time-limit">残り{{ min }}分{{ sec }}秒</div>
   <div class="chat-container">
-    まずは挨拶してみましょう！
+    <p class="aisatu">まずは挨拶してみましょう！</p>
     <div v-for="(chat, id) in chats" :key="id">
       <div v-if="chat.name === irekawari" class="right-container">
         <p class="player-name">{{ chat.name }}</p>
@@ -43,7 +43,15 @@
   width: 700px;
 }
 
+h1 {
+  color: white;
+}
+.aisatu {
+  color: white;
+  font-weight: bold;
+}
 .time-limit {
+  color: white;
   position: absolute;
   top: 50px;
   right: 50px;
@@ -119,6 +127,7 @@
 }
 
 .player-name {
+  color: white;
   margin-bottom: 0;
   font-size: 5px;
 }
