@@ -3,7 +3,9 @@
     <h1>プレイヤー一覧</h1>
 
     <div class="text">
-      {{ players }}
+      <div v-for="(player, index) in players" :key="index" class="players-list">
+        {{ player }}
+      </div>
     </div>
 
     <div v-if="playerNum === 0">
@@ -11,7 +13,9 @@
         :to="`/${$route.params.id}/shufflecheck`"
         class="navigation__link"
       >
-        <button v-on:click="shuffle" class="btn">シャッフル</button>
+        <button v-on:click="shuffle" class="btn" :disabled="players.length < 3">
+          シャッフル
+        </button>
       </router-link>
       <button v-on:click="copyLink" class="btn2">招待</button>
     </div>
@@ -35,24 +39,11 @@
 import { doc, updateDoc, setDoc } from "firebase/firestore"
 import { ref } from "vue"
 import { db } from "@/firebase.js"
-import {
-  players,
-  shuffleplayersId,
-  getRandomInt,
-  playerNum,
-} from "@/lib/game.js"
+import { players, getRandomInt, playerNum } from "@/lib/game.js"
 import { useRoute, useRouter } from "vue-router"
 
 export default {
   setup() {
-    // onMounted(() => {
-    //   if (playerNum.value !== 0) {
-    //     window.onload = () => {
-    //       alert("名前を入力してね！")
-    //     }
-    //   }
-    // })
-
     const route = useRoute()
     const router = useRouter()
     const copyLink = async () => {
@@ -78,17 +69,26 @@ export default {
 
     const random1 = ref(0)
     const random2 = ref(0)
+    const random3 = ref(0)
     const shuffle = () => {
       random1.value = getRandomInt(players.value.length)
       random2.value = getRandomInt(players.value.length)
       while (random1.value === random2.value) {
         random2.value = getRandomInt(players.value.length)
       }
+      random3.value = getRandomInt(players.value.length)
+      while (
+        random3.value === random1.value ||
+        random3.value === random2.value
+      ) {
+        random3.value = getRandomInt(players.value.length)
+      }
       const compodata = { currentComponent: "shufflecheck" }
       updateDoc(doc(db, "rooms", route.params.id), compodata)
 
       const data = {
         shuffleplayersId: [random1.value, random2.value],
+        madmanId: random3.value,
       }
       updateDoc(doc(db, "rooms", route.params.id), data)
     }
@@ -98,7 +98,6 @@ export default {
       shuffle,
       playerNum,
       players,
-      shuffleplayersId,
       copyLink,
       playerName,
       checked,
@@ -230,5 +229,14 @@ h1 {
 input,
 textarea {
   color: white;
+}
+
+.players-list {
+  border: solid;
+  border-radius: 1rem;
+  width: 200px;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  padding: 10px;
 }
 </style>

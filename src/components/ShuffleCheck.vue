@@ -26,19 +26,23 @@ export default {
     const route = useRoute()
     const text = ref("")
     const time = ref("")
+    const madmanId = ref("")
 
     const shuffleref = doc(db, "rooms", route.params.id)
     const shuffleunsub = onSnapshot(shuffleref, async (Snapshot) => {
       shuffleplayersId.value = []
       shuffleplayersId.value = await Snapshot.data().shuffleplayersId
+      madmanId.value = await Snapshot.data().madmanId
       if (shuffleplayersId.value[0] === playerNum.value) {
-        text.value = `あなたはシャッフルされています。
+        text.value = `あなたはpretenderです。
      ${players.value[shuffleplayersId.value[1]]}
    になりすましてください。`
       } else if (shuffleplayersId.value[1] === playerNum.value) {
-        text.value = `あなたはシャッフルされています。
+        text.value = `あなたはpretenderです。
      ${players.value[shuffleplayersId.value[0]]}
    になりすましてください。`
+      } else if (madmanId.value === playerNum.value) {
+        text.value = "あなたは狂人です。"
       } else {
         text.value = "あなたはシャッフルされていません！"
       }

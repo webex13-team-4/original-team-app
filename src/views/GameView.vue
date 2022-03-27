@@ -9,7 +9,6 @@ const compounsubscribe = componentSubscribe()
 const playersunsubscribe = playersSubscribe()
 
 onUnmounted(() => {
-  console.log("通信が切断されました...!")
   compounsubscribe()
   playersunsubscribe()
 })
