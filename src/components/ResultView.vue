@@ -1,13 +1,19 @@
 <template>
-  <h1>結果発表</h1>
-  最も多く投票されたのは・・・
-  <div v-for="(voted, index) in maxVotedIds" :key="index">
-    {{ players[voted[0]] }}と{{ players[voted[1]] }}
-  </div>
-  <div>
-    実は・・{{ players[shuffleplayersId[0]] }}と{{
-      players[shuffleplayersId[1]]
-    }}が入れ替わってました!
+  <div class="result">
+    <h1>結果発表</h1>
+    <p class="most">最も多く投票されたのは・・・</p>
+    <div v-for="(voted, index) in maxVotedIds" :key="index">
+      <p class="vote">
+        {{ players[voted[0]] }}
+        と{{ players[voted[1]] }}
+      </p>
+    </div>
+    <p class="resultp">実は・・</p>
+    <div class="resultd">
+      <span>{{ players[shuffleplayersId[0]] }}</span
+      >と<span>{{ players[shuffleplayersId[1]] }}</span
+      >が入れ替わってました!
+    </div>
   </div>
 </template>
 
@@ -70,7 +76,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 170px 350px;
+  padding: 70px 300px;
   background-color: white;
   border-radius: 30px;
   border: solid 5px #7767cf;
@@ -79,7 +85,12 @@ export default {
 
 h1 {
   position: relative;
-  top: -80px;
+  top: -60px;
+}
+
+.most {
+  position: relative;
+  top: -50px;
 }
 
 .vote {
@@ -87,8 +98,8 @@ h1 {
   top: -50px;
   opacity: 0;
   animation-name: fadeIn;
-  animation-delay: 0.5s;
-  animation-duration: 0.5s;
+  animation-delay: 0.8s;
+  animation-duration: 0.8s;
   animation-fill-mode: forwards;
 }
 

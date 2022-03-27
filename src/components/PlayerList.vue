@@ -1,23 +1,33 @@
 <template>
-  <h1>プレイヤー一覧</h1>
+  <div class="players">
+    <h1>プレイヤー一覧</h1>
 
-  <div>
-    {{ players }}
-  </div>
+    <div class="text">
+      {{ players }}
+    </div>
 
-  <div v-if="playerNum === 0">
-    <router-link
-      :to="`/${$route.params.id}/shufflecheck`"
-      class="navigation__link"
-    >
-      <button v-on:click="shuffle">シャッフル</button>
-    </router-link>
-    <button v-on:click="copyLink">招待</button>
-  </div>
+    <div v-if="playerNum === 0">
+      <router-link
+        :to="`/${$route.params.id}/shufflecheck`"
+        class="navigation__link"
+      >
+        <button v-on:click="shuffle" class="btn">シャッフル</button>
+      </router-link>
+      <button v-on:click="copyLink" class="btn2">招待</button>
+    </div>
 
-  <div v-else>
-    <input type="text" v-model="playerName" />
-    <button v-on:click="enter" :disabled="checked">この名前で入る。</button>
+    <div v-else>
+      <input
+        type="text"
+        v-model="playerName"
+        placeholder="ニックネーム"
+        style="width: 300px; height: 30px"
+        class="playerinput"
+      />
+      <button v-on:click="enter" :disabled="checked" class="btn3">
+        この名前で入る。
+      </button>
+    </div>
   </div>
 </template>
 
@@ -98,6 +108,13 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  white-space: nowrap;
+  position: relative;
+  top: -70px;
+  text-shadow: 0 1px #bbb, 0 2px #aaa, 0 3px #999, 0 4px #888, 0 5px #777,
+    0 6px #666, 0 7px #555, 0 8px #444, 0 9px #333, 0 10px 8px #000;
+}
 .players {
   color: white;
   position: absolute;
@@ -117,7 +134,7 @@ export default {
   top: -40px;
 }
 
-.playerbtn button {
+.btn {
   color: blue;
   background-color: white;
   opacity: 0.8;
@@ -125,19 +142,20 @@ export default {
   border-radius: 5px;
   box-shadow: 0px 4px 2px rgb(0, 0, 0);
   padding: 10px 20px;
+  margin-right: 30px;
   cursor: pointer;
 }
 
-.playerbtn button:hover {
+.btn:hover {
   opacity: 1;
 }
 
-.playerbtn button:active {
+.btn:active {
   box-shadow: none;
   position: relative;
   top: 6px;
 }
-.playerbtn2 {
+.btn2 {
   color: blue;
   background-color: white;
   opacity: 0.8;
@@ -149,16 +167,16 @@ export default {
   margin-right: 10px;
 }
 
-.playerbtn2:hover {
+.btn2:hover {
   opacity: 1;
 }
 
-.playerbtn2:active {
+.btn2:active {
   box-shadow: none;
   position: relative;
   top: 6px;
 }
-.playerbtn3 {
+.btn3 {
   color: blue;
   background-color: white;
   opacity: 0.8;
@@ -170,11 +188,11 @@ export default {
   margin: 0 0 30px 20px;
 }
 
-.playerbtn3:hover {
+.btn3:hover {
   opacity: 1;
 }
 
-.playerbtn3:active {
+.btn3:active {
   box-shadow: none;
   position: relative;
   top: 6px;
@@ -196,6 +214,8 @@ export default {
   font-size: 20px;
   animation: move-y 0.5s infinite alternate ease-in-out;
   display: inline-block;
+  position: relative;
+  top: -50px;
 }
 
 @keyframes move-y {
@@ -205,5 +225,10 @@ export default {
   to {
     transform: translateY(10px);
   }
+}
+
+input,
+textarea {
+  color: white;
 }
 </style>
