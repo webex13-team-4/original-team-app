@@ -29,7 +29,7 @@
         class="playerinput"
       />
       <button v-on:click="enter" :disabled="checked" class="btn3">
-        この名前で入る。
+        この名前で入る
       </button>
     </div>
   </div>

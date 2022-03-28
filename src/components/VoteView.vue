@@ -1,6 +1,6 @@
 <template>
   <div v-if="!shuffleplayersId.includes(playerNum)" class="players-container">
-    <h1>入れ替わっているのは誰？2人選んでね!</h1>
+    <h1>PRETENDERは誰？2人選んでね!</h1>
     <div
       v-for="(playerName, playerId) in players"
       :key="playerId"

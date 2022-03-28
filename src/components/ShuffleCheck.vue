@@ -44,7 +44,7 @@ export default {
       } else if (madmanId.value === playerNum.value) {
         text.value = "あなたは狂人です。"
       } else {
-        text.value = "あなたはシャッフルされていません！"
+        text.value = "あなたは警察です！"
       }
     })
 

@@ -12,7 +12,14 @@
     <div class="resultd">
       <span>{{ players[shuffleplayersId[0]] }}</span
       >と<span>{{ players[shuffleplayersId[1]] }}</span
-      >が入れ替わってました!
+      >がPRETENDERでした!
+    </div>
+    <div>
+      <router-link to="/" class="navigation__link">
+        <div class="btn">
+          <button v-on:click="start(hostPlayer)">タイトルに戻る</button>
+        </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -68,6 +75,27 @@ export default {
 </script>
 
 <style scoped>
+.btn button {
+  color: white;
+  background-color: blue;
+  opacity: 0.8;
+  border: solid white;
+  border-radius: 5px;
+  font-weight: bold;
+  box-shadow: 0px 4px 2px rgb(0, 0, 0);
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.btn button:hover {
+  opacity: 1;
+}
+
+.btn button:active {
+  box-shadow: none;
+  position: relative;
+  top: 6px;
+}
 .result {
   color: #211469;
   font-weight: bold;
